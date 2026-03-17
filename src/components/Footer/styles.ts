@@ -1,8 +1,5 @@
 import styled from 'styled-components'
 
-// ----------------------------------------------------------
-// Wrapper principal
-// ----------------------------------------------------------
 export const FooterWrapper = styled.footer`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.background.default};
@@ -21,20 +18,17 @@ export const FooterInner = styled.div`
   }
 `
 
-// ----------------------------------------------------------
-// Footer simples (profissional/usuária)
-// Desktop: logo + links numa linha + redes + CNPJ
-// ----------------------------------------------------------
+/* ---- Footer simples ---- */
 export const FooterSimpleTop = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing['08']};
+  gap: ${({ theme }) => theme.spacing['24']};
 
   ${({ theme }) => theme.media.lg} {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: ${({ theme }) => theme.spacing['24']};
+    gap: ${({ theme }) => theme.spacing['32']};
   }
 `
 
@@ -42,6 +36,10 @@ export const FooterLogoLink = styled.a`
   display: inline-flex;
   flex-shrink: 0;
   text-decoration: none;
+  white-space: nowrap;
+
+  /* garante que o SVG não quebre linha */
+  svg { display: block; }
 
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
@@ -50,7 +48,6 @@ export const FooterLogoLink = styled.a`
   }
 `
 
-// Links simples — ul > li em linha (desktop) ou coluna (mobile)
 export const FooterSimpleNav = styled.nav``
 
 export const FooterSimpleList = styled.ul`
@@ -61,7 +58,7 @@ export const FooterSimpleList = styled.ul`
 
   ${({ theme }) => theme.media.lg} {
     flex-direction: row;
-    gap: ${({ theme }) => theme.spacing['24']};
+    gap: ${({ theme }) => theme.spacing['32']};
   }
 `
 
@@ -86,9 +83,7 @@ export const FooterLink = styled.a`
   }
 `
 
-// ----------------------------------------------------------
-// Footer institucional — 3 colunas de links com título h2
-// ----------------------------------------------------------
+/* ---- Footer institucional ---- */
 export const FooterInstitucionalTop = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -108,7 +103,7 @@ export const FooterColTitle = styled.h2`
   font-size: ${({ theme }) => theme.typography.text.xlHigh200.fontSize};
   font-weight: ${({ theme }) => theme.typography.text.xlHigh200.fontWeight};
   color: ${({ theme }) => theme.colors.text.heading};
-  margin-bottom: ${({ theme }) => theme.spacing['08']};
+  margin-bottom: ${({ theme }) => theme.spacing['12']};
 `
 
 export const FooterColList = styled.ul`
@@ -120,38 +115,36 @@ export const FooterColList = styled.ul`
 
 export const FooterColItem = styled.li``
 
-// ----------------------------------------------------------
-// Área de redes sociais
-// ----------------------------------------------------------
+/* ---- Redes sociais ---- */
 export const FooterSocial = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing['16']};
-  margin-top: ${({ theme }) => theme.spacing['32']};
-
-  ${({ theme }) => theme.media.lg} {
-    margin-top: ${({ theme }) => theme.spacing['24']};
-    gap: ${({ theme }) => theme.spacing['16']};
-  }
+  margin-top: ${({ theme }) => theme.spacing['24']};
 `
 
-// ghost_button_icon — 48x48px desktop, 24x24px mobile
+/* ghost_button_icon — 48x48px desktop, 40x40px mobile */
 export const SocialButton = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: ${({ theme }) => theme.colors.icon.accent};
+  width: 40px;
+  height: 40px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  border: 1px solid ${({ theme }) => theme.colors.border.primary};
+  color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
 
   ${({ theme }) => theme.media.lg} {
     width: 48px;
     height: 48px;
   }
 
-  &:hover { opacity: 0.75; }
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.success};
+  }
 
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
@@ -160,32 +153,27 @@ export const SocialButton = styled.a`
   }
 `
 
-// ----------------------------------------------------------
-// Divider
-// ----------------------------------------------------------
+/* ---- Divider ---- */
 export const FooterDivider = styled.hr`
   border: none;
   border-top: 1px solid ${({ theme }) => theme.colors.border.default};
-  margin: ${({ theme }) => theme.spacing['32']} 0;
+  margin: ${({ theme }) => theme.spacing['24']} 0;
 `
 
-// ----------------------------------------------------------
-// Aviso CVV — footer institucional
-// ----------------------------------------------------------
+/* ---- Aviso CVV ---- */
 export const FooterCVV = styled.p`
   font-size: ${({ theme }) => theme.typography.text.sm.fontSize};
   color: ${({ theme }) => theme.colors.text.muted};
   line-height: ${({ theme }) => theme.typography.lineHeights.normal};
   max-width: 720px;
+  margin-bottom: ${({ theme }) => theme.spacing['16']};
 `
 
-// ----------------------------------------------------------
-// Rodapé inferior — CNPJ + copyright + botão topo
-// ----------------------------------------------------------
+/* ---- Rodapé inferior ---- */
 export const FooterBottom = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing['08']};
+  gap: ${({ theme }) => theme.spacing['12']};
 
   ${({ theme }) => theme.media.lg} {
     flex-direction: row;
@@ -197,10 +185,10 @@ export const FooterBottom = styled.div`
 export const FooterLegal = styled.p`
   font-size: ${({ theme }) => theme.typography.text.xs.fontSize};
   color: ${({ theme }) => theme.colors.text.muted};
+  max-width: none; /* override do reset global que limita p a 75ch */
 `
 
-// Botão "voltar ao topo" — secondary-button-icon, opcional
-// Aparece quando scroll >= 100px
+/* Botão voltar ao topo — fixed no mobile, static no desktop */
 export const BackToTopButton = styled.button<{ $visible: boolean }>`
   display: flex;
   align-items: center;
@@ -217,19 +205,22 @@ export const BackToTopButton = styled.button<{ $visible: boolean }>`
   pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
   flex-shrink: 0;
 
-  &:hover { background-color: ${({ theme }) => theme.colors.background.success}; }
+  /* mobile: fixo no canto inferior direito */
+  position: fixed;
+  bottom: ${({ theme }) => theme.spacing['24']};
+  right: ${({ theme }) => theme.spacing['24']};
+  z-index: ${({ theme }) => theme.zIndex.raised};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.success};
+  }
 
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: 2px;
   }
 
-  /* No mobile fica fixo no canto inferior direito */
-  position: fixed;
-  bottom: ${({ theme }) => theme.spacing['24']};
-  right: ${({ theme }) => theme.spacing['24']};
-  z-index: ${({ theme }) => theme.zIndex.raised};
-
+  /* desktop: estático no layout */
   ${({ theme }) => theme.media.lg} {
     position: static;
   }

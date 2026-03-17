@@ -12,12 +12,11 @@ export const HeaderWrapper = styled.header`
 export const HeaderInner = styled.div`
   max-width: 1440px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing['12']}
-           ${({ theme }) => theme.spacing['24']};
+  padding: 0 ${({ theme }) => theme.spacing['24']};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing['16']};
+  gap: ${({ theme }) => theme.spacingInline.m}; /* spacing-m = 16px */
   height: 64px;
 `
 
@@ -34,28 +33,57 @@ export const LogoLink = styled.a`
   }
 `
 
-// Navegação — só desktop, links "Quem somos" e "Ajuda"
+/* Nav desktop — "Quem somos" e "Ajuda" como bottom link/default */
 export const DesktopNav = styled.nav`
   display: none;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing['32']};
+  gap: ${({ theme }) => theme.spacingInline.s}; /* spacing-s = 12px */
+  margin-left: auto;
 
   ${({ theme }) => theme.media.lg} {
     display: flex;
   }
 `
 
+/* bottom link/default — 48px de altura, sem borda, underline no bottom */
 export const NavLink = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 ${({ theme }) => theme.spacing['12']};
   font-size: ${({ theme }) => theme.typography.text.sm.fontSize};
   font-weight: ${({ theme }) => theme.typography.fontWeights.semibold};
+  font-family: ${({ theme }) => theme.typography.fontFamily.sans};
   color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
-  padding: ${({ theme }) => theme.spacingSquish.xs};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-  transition: color 0.2s ease, background-color 0.2s ease;
+  position: relative;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+
+  /* underline decorativo no bottom */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: ${({ theme }) => theme.spacing['12']};
+    right: ${({ theme }) => theme.spacing['12']};
+    height: 2px;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    border-radius: 1px;
+  }
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.background.success};
+    &::after {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+
+  &[aria-current='page']::after {
+    background-color: ${({ theme }) => theme.colors.primary};
   }
 
   &:focus-visible {
@@ -64,7 +92,42 @@ export const NavLink = styled.a`
   }
 `
 
-// Campo de busca — só aparece quando logado (desktop)
+/* Área de ações lado direito */
+export const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacingInline.s}; /* spacing-s = 12px */
+`
+
+/* Botão "Entrar" — primary button/default/icon-right, 141×48px */
+export const EntrarButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing['08']};
+  height: 48px;
+  min-width: 141px;
+  padding: 0 ${({ theme }) => theme.spacing['32']};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: ${({ theme }) => theme.typography.text.sm.fontSize};
+  font-weight: ${({ theme }) => theme.typography.fontWeights.bold};
+  font-family: ${({ theme }) => theme.typography.fontFamily.sans};
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+
+  &:hover { background-color: ${({ theme }) => theme.colors.primaryDark}; }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.border.focus};
+    outline-offset: 2px;
+  }
+`
+
+/* ---- Campos de busca (logado) ---- */
 export const SearchWrapper = styled.div`
   display: none;
   flex: 1;
@@ -91,13 +154,8 @@ export const SearchInput = styled.input`
   outline: none;
   transition: border-color 0.2s ease;
 
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.text.muted};
-  }
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.border.focus};
-  }
+  &::placeholder { color: ${({ theme }) => theme.colors.text.muted}; }
+  &:focus { border-color: ${({ theme }) => theme.colors.border.focus}; }
 `
 
 export const SearchClearButton = styled.button`
@@ -113,7 +171,6 @@ export const SearchClearButton = styled.button`
   cursor: pointer;
   color: ${({ theme }) => theme.colors.text.muted};
   padding: ${({ theme }) => theme.spacing['04']};
-
   &:hover { color: ${({ theme }) => theme.colors.text.default}; }
 `
 
@@ -130,28 +187,19 @@ export const SearchButton = styled.button`
   color: ${({ theme }) => theme.colors.white};
   transition: background-color 0.2s ease;
   flex-shrink: 0;
-
   &:hover { background-color: ${({ theme }) => theme.colors.primaryDark}; }
-
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: 2px;
   }
 `
 
-// Área de ações do lado direito
-export const HeaderActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing['08']};
-`
-
-// Botão "Ajuda" outline — aparece quando logado
+/* Botão "Ajuda" outline (logado, desktop) */
 export const HelpButton = styled.a`
   display: none;
   align-items: center;
-  height: 36px;
-  padding: ${({ theme }) => theme.spacingSquish.xs};
+  height: 40px;
+  padding: 0 ${({ theme }) => theme.spacing['16']};
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-size: ${({ theme }) => theme.typography.text.sm.fontSize};
@@ -162,66 +210,31 @@ export const HelpButton = styled.a`
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.2s ease;
-
   &:hover { background-color: ${({ theme }) => theme.colors.background.success}; }
-
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: 2px;
   }
-
-  ${({ theme }) => theme.media.lg} {
-    display: flex;
-  }
+  ${({ theme }) => theme.media.lg} { display: flex; }
 `
 
-// Botão "Entrar" — sólido verde, com ícone pessoa
-export const EntrarButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing['08']};
-  height: 40px;
-  padding: ${({ theme }) => theme.spacingSquish.s};
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: ${({ theme }) => theme.typography.text.sm.fontSize};
-  font-weight: ${({ theme }) => theme.typography.fontWeights.bold};
-  font-family: ${({ theme }) => theme.typography.fontFamily.sans};
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover { background-color: ${({ theme }) => theme.colors.primaryDark}; }
-
-  &:focus-visible {
-    outline: 3px solid ${({ theme }) => theme.colors.border.focus};
-    outline-offset: 2px;
-    border-radius: ${({ theme }) => theme.borderRadius.md};
-  }
-`
-
-// Ícone "?" de ajuda — mobile
+/* Ícone "?" mobile */
 export const HelpIconButton = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: ${({ theme }) => theme.borderRadius.full};
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
   transition: background-color 0.2s ease;
-
   &:hover { background-color: ${({ theme }) => theme.colors.background.success}; }
-
-  ${({ theme }) => theme.media.lg} {
-    display: none;
-  }
+  ${({ theme }) => theme.media.lg} { display: none; }
 `
 
-// Avatar + chevron
+/* Avatar + chevron */
 export const AvatarButton = styled.button`
   display: flex;
   align-items: center;
@@ -232,19 +245,16 @@ export const AvatarButton = styled.button`
   padding: ${({ theme }) => theme.spacing['04']};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   transition: background-color 0.2s ease;
-
-  &[aria-expanded='true'],
-  &:hover {
+  &[aria-expanded='true'], &:hover {
     background-color: ${({ theme }) => theme.colors.background.successHover};
   }
-
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: 2px;
   }
 `
 
-export const AvatarCircle = styled.div<{ hasImage?: boolean }>`
+export const AvatarCircle = styled.div`
   width: 36px;
   height: 36px;
   border-radius: ${({ theme }) => theme.borderRadius.full};
@@ -259,7 +269,6 @@ export const AvatarCircle = styled.div<{ hasImage?: boolean }>`
   flex-shrink: 0;
 `
 
-// Ícone de sair
 export const LogoutButton = styled.a`
   display: flex;
   align-items: center;
@@ -270,19 +279,16 @@ export const LogoutButton = styled.a`
   text-decoration: none;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   transition: color 0.2s ease, background-color 0.2s ease;
-
   &:hover {
     color: ${({ theme }) => theme.colors.text.error};
     background-color: ${({ theme }) => theme.colors.background.error};
   }
-
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: 2px;
   }
 `
 
-// Popover — dropdown do botão Entrar / Avatar
 export const Popover = styled.div`
   position: absolute;
   top: calc(100% + 8px);
@@ -306,11 +312,8 @@ export const PopoverItem = styled.a`
   text-decoration: none;
   transition: background-color 0.2s ease;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.subtle};
-
   &:last-child { border-bottom: none; }
-
   &:hover { background-color: ${({ theme }) => theme.colors.background.success}; }
-
   &:focus-visible {
     outline: 3px solid ${({ theme }) => theme.colors.border.focus};
     outline-offset: -2px;

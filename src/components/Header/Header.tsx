@@ -26,44 +26,36 @@ import {
   PopoverAnchor,
 } from './styles'
 
-// -------------------------------------------------------
-// Tipos
-// -------------------------------------------------------
 interface User {
-  name:      string
+  name:       string
   avatarUrl?: string
-  type:      'paciente' | 'profissional'
+  type:       'paciente' | 'profissional'
 }
 
 interface HeaderProps {
-  user?: User   // undefined = não logado
-  onLogout?: () => void
-  onSearch?: (query: string) => void
+  user?:      User
+  onLogout?:  () => void
+  onSearch?:  (query: string) => void
 }
 
-// -------------------------------------------------------
-// Componente
-// -------------------------------------------------------
 export function Header({ user, onLogout, onSearch }: HeaderProps) {
-  const pathname              = usePathname()
-  const [popoverOpen, setPopoverOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const popoverRef            = useRef<HTMLDivElement>(null)
+  const pathname                        = usePathname()
+  const [popoverOpen, setPopoverOpen]   = useState(false)
+  const [searchQuery, setSearchQuery]   = useState('')
+  const popoverRef                      = useRef<HTMLDivElement>(null)
 
-  // Fecha popover ao clicar fora
+  /* Fecha popover ao clicar fora */
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
         setPopoverOpen(false)
       }
     }
-    if (popoverOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
+    if (popoverOpen) document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [popoverOpen])
 
-  // Fecha popover com Escape
+  /* Fecha popover com Escape */
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setPopoverOpen(false)
@@ -83,7 +75,7 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
 
   return (
     <>
-      {/* Skip link — acessibilidade */}
+      {/* Skip link */}
       <a href="#main-content" className="skip-link">
         Pular para o conteúdo principal
       </a>
@@ -91,14 +83,15 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
       <HeaderWrapper role="banner">
         <HeaderInner>
 
-          {/* Logo — LS Lacrei Saúde, horizontal, cor verde */}
+          {/* Logo — horizontal total / gradiente (202×24px no Figma) */}
           <LogoLink href="/" as={Link} aria-label="Lacrei Saúde — página inicial">
-            <Logo variant="horizontalTotal" color="green" width={144} height={36} />
+            <Logo variant="horizontalTotal" color="gradient" width={202} height={24} />
           </LogoLink>
 
-          {/* ---- NÃO LOGADO — nav + botão Entrar ---- */}
+          {/* ---- NÃO LOGADO ---- */}
           {!user && (
             <>
+              {/* Nav: "Quem somos" e "Ajuda" — bottom link/default, 48px height */}
               <DesktopNav aria-label="Navegação principal">
                 <NavLink
                   href="/quem-somos"
@@ -118,51 +111,38 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
 
               <HeaderActions>
                 {/* Botão "?" ajuda — mobile only */}
-                <HelpIconButton
-                  href="/ajuda"
-                  as={Link}
-                  aria-label="Central de ajuda"
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    aria-hidden="true"
-                    style={{ fontSize: '20px' }}
-                  >
+                <HelpIconButton href="/ajuda" as={Link} aria-label="Central de ajuda">
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>
                     help
                   </span>
                 </HelpIconButton>
 
-                {/* Botão Entrar com popover Paciente / Profissional */}
+                {/* Botão Entrar — primary button/default/icon-right
+                    aria-label = "abrir opções de entrada" (conforme Figma) */}
                 <PopoverAnchor ref={popoverRef}>
                   <EntrarButton
                     aria-haspopup="true"
                     aria-expanded={popoverOpen}
                     aria-controls="entrar-popover"
+                    aria-label="abrir opções de entrada"
                     onClick={() => setPopoverOpen(prev => !prev)}
                   >
-                    <span
-                      className="material-symbols-outlined"
-                      aria-hidden="true"
-                      style={{ fontSize: '20px' }}
-                    >
-                      person
-                    </span>
                     Entrar
+                    {/* icon-right: expand_more */}
+                    <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>
+                      expand_more
+                    </span>
                   </EntrarButton>
 
                   {popoverOpen && (
-                    <Popover id="entrar-popover" role="menu" aria-label="Tipo de entrada">
+                    <Popover id="entrar-popover" role="menu" aria-label="Opções de entrada">
                       <PopoverItem
                         href="/entrar/paciente"
                         as={Link}
                         role="menuitem"
                         onClick={() => setPopoverOpen(false)}
                       >
-                        <span
-                          className="material-symbols-outlined"
-                          aria-hidden="true"
-                          style={{ fontSize: '20px', color: 'inherit' }}
-                        >
+                        <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>
                           person
                         </span>
                         Paciente
@@ -173,11 +153,7 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
                         role="menuitem"
                         onClick={() => setPopoverOpen(false)}
                       >
-                        <span
-                          className="material-symbols-outlined"
-                          aria-hidden="true"
-                          style={{ fontSize: '20px', color: 'inherit' }}
-                        >
+                        <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>
                           medical_services
                         </span>
                         Profissional
@@ -189,10 +165,9 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
             </>
           )}
 
-          {/* ---- LOGADO — busca + avatar + sair ---- */}
+          {/* ---- LOGADO ---- */}
           {user && (
             <HeaderActions>
-              {/* Campo de busca — desktop */}
               <SearchWrapper as="form" onSubmit={handleSearch}>
                 <SearchInput
                   type="search"
@@ -202,48 +177,20 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
                   aria-label="Buscar profissional de saúde"
                 />
                 {searchQuery && (
-                  <SearchClearButton
-                    type="button"
-                    aria-label="Limpar busca"
-                    onClick={() => setSearchQuery('')}
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      aria-hidden="true"
-                      style={{ fontSize: '18px' }}
-                    >
-                      close
-                    </span>
+                  <SearchClearButton type="button" aria-label="Limpar busca" onClick={() => setSearchQuery('')}>
+                    <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>close</span>
                   </SearchClearButton>
                 )}
                 <SearchButton type="submit" aria-label="Buscar">
-                  <span
-                    className="material-symbols-outlined"
-                    aria-hidden="true"
-                    style={{ fontSize: '20px' }}
-                  >
-                    search
-                  </span>
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>search</span>
                 </SearchButton>
               </SearchWrapper>
 
-              {/* Botão Ajuda — outline, desktop */}
-              <HelpButton href="/ajuda" as={Link} aria-label="Central de ajuda">
-                Ajuda
-              </HelpButton>
-
-              {/* Ícone "?" — mobile */}
+              <HelpButton href="/ajuda" as={Link} aria-label="Central de ajuda">Ajuda</HelpButton>
               <HelpIconButton href="/ajuda" as={Link} aria-label="Central de ajuda">
-                <span
-                  className="material-symbols-outlined"
-                  aria-hidden="true"
-                  style={{ fontSize: '20px' }}
-                >
-                  help
-                </span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>help</span>
               </HelpIconButton>
 
-              {/* Avatar + chevron + popover */}
               <PopoverAnchor ref={popoverRef}>
                 <AvatarButton
                   aria-haspopup="true"
@@ -258,43 +205,25 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
                       : initials
                     }
                   </AvatarCircle>
-                  <span
-                    className="material-symbols-outlined"
-                    aria-hidden="true"
-                    style={{ fontSize: '20px', color: 'var(--color-primary)' }}
-                  >
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: 'var(--color-primary)' }}>
                     {popoverOpen ? 'expand_less' : 'expand_more'}
                   </span>
                 </AvatarButton>
 
                 {popoverOpen && (
                   <Popover id="avatar-popover" role="menu" aria-label={`Menu de ${user.name}`}>
-                    <PopoverItem
-                      href="/perfil"
-                      as={Link}
-                      role="menuitem"
-                      onClick={() => setPopoverOpen(false)}
-                    >
+                    <PopoverItem href="/perfil" as={Link} role="menuitem" onClick={() => setPopoverOpen(false)}>
                       <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>person</span>
                       Perfil
                     </PopoverItem>
-                    <PopoverItem
-                      href="/consultas"
-                      as={Link}
-                      role="menuitem"
-                      onClick={() => setPopoverOpen(false)}
-                    >
+                    <PopoverItem href="/consultas" as={Link} role="menuitem" onClick={() => setPopoverOpen(false)}>
                       <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>calendar_month</span>
                       Minhas consultas
                     </PopoverItem>
                     <PopoverItem
                       href="#"
                       role="menuitem"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setPopoverOpen(false)
-                        onLogout?.()
-                      }}
+                      onClick={(e) => { e.preventDefault(); setPopoverOpen(false); onLogout?.() }}
                     >
                       <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>logout</span>
                       Sair
@@ -303,23 +232,10 @@ export function Header({ user, onLogout, onSearch }: HeaderProps) {
                 )}
               </PopoverAnchor>
 
-              {/* Ícone sair — direto, sem popover (desktop) */}
-              <LogoutButton
-                href="#"
-                as="button"
-                aria-label="Sair da conta"
-                onClick={(e: React.MouseEvent) => {
-                  e.preventDefault()
-                  onLogout?.()
-                }}
+              <LogoutButton href="#" as="button" aria-label="Sair da conta"
+                onClick={(e: React.MouseEvent) => { e.preventDefault(); onLogout?.() }}
               >
-                <span
-                  className="material-symbols-outlined"
-                  aria-hidden="true"
-                  style={{ fontSize: '20px' }}
-                >
-                  logout
-                </span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>logout</span>
               </LogoutButton>
             </HeaderActions>
           )}
